@@ -13,7 +13,9 @@
  2. Compilar mobile no expo
    
         $ npx expo start
-    ou 
+        
+        ou
+     
         $ npx expo start --clear
        
  3. É necessário ter o expo go baixado no pc ou no celular.
