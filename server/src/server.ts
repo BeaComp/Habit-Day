@@ -3,11 +3,14 @@
 import Fastify from "fastify";
 import cors from '@fastify/cors'
 import { appRoutes } from "./routes";
+import { notificationsRoutes} from './notifications-routes'
 
 const app = Fastify()
 
+app.register(notificationsRoutes)
 app.register(cors)
 app.register(appRoutes)
+
 
 
 //Rota para aparecer na tela

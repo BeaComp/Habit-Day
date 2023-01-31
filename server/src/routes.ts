@@ -1,7 +1,5 @@
-
 import dayjs from "dayjs"
 import { FastifyInstance } from "fastify"
-import { request } from "http"
 import { z } from "zod"
 import { prisma } from "./lib/prisma"
 
@@ -75,8 +73,6 @@ export async function appRoutes(app: FastifyInstance) {
     }
   })
 
-  // completar e não completar um habito
-
   app.patch('/habits/:id/toggle', async (request) => {
     const toggleHabitParams = z.object({
       id: z.string().uuid()
@@ -84,7 +80,7 @@ export async function appRoutes(app: FastifyInstance) {
 
     const { id } = toggleHabitParams.parse(request.params)
 
-    const today = dayjs().startOf('day').toDate();
+    const today = dayjs().startOf('day').toDate()
 
     let day = await prisma.day.findFirst({
       where: {
@@ -100,39 +96,31 @@ export async function appRoutes(app: FastifyInstance) {
       })
     }
 
-    //buscando pra ver se o usuario já completou o habito
     const dayHabit = await prisma.dayHabit.findUnique({
       where: {
         day_id_habit_id: {
           day_id: day.id,
-          habit_id: id,
+          habit_id: id
         }
       }
     })
 
-    //verificando pra ver se ele marcou, senao cria
-    if(dayHabit){
-      //remove a marcacao
+    if(dayHabit) {
       await prisma.dayHabit.delete({
         where: {
-          id: dayHabit.id,
+          id: dayHabit.id
         }
       })
     } else {
-      //completa o habito
       await prisma.dayHabit.create({
         data: {
-        day_id: day.id,
-        habit_id: id,
+          day_id: day.id,
+          habit_id: id
         }
       })
     }
-
-    
-
   })
 
-  //resumo do dia
   app.get('/summary', async () => {
     const summary = await prisma.$queryRaw`
       SELECT 
@@ -156,7 +144,7 @@ export async function appRoutes(app: FastifyInstance) {
         ) as amount
       FROM days D
     `
-//  -- as amount mostra os habitos disponiveis na data
+
     return summary
   })
 }
